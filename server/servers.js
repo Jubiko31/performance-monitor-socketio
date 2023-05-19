@@ -2,12 +2,12 @@ const express = require('express');
 const cluster = require('cluster');
 const net = require('net');
 const socketio = require('socket.io')
-const socketMain = require('./socketMain')
+const socketMain = require('./socketMain.js')
 
 const PORT = 8181;
 const numProcesses = require('os').cpus().length;
 const io_redis = require('socket.io-redis');
-const farmash = require('farmash');
+const farmhash = require('farmhash');
 const { spawn } = require('child_process');
 
 if (cluster.isMaster) {
@@ -24,7 +24,7 @@ if (cluster.isMaster) {
     }
 
     const worker_index = (ip, len) => {
-        return farmash.fingerprint32(ip) % len;
+        return farmhash.fingerprint32(ip) % len;
     }
 
     const server = net.createServer({ pauseOnConnect: true }, (connection) => {
@@ -34,6 +34,8 @@ if (cluster.isMaster) {
     server.listen(PORT);
     console.log(`Master listening on port ${PORT}`);
 } else {
+    let app = express();
+
     const server = app.listen(0, 'localhost');
     const io = socketio(server);
     
