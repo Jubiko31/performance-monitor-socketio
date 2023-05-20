@@ -17,6 +17,8 @@ socket.on('connect', () => {
             socket.emit('perfData', data)
         });
     }, 1000);   
+
+    socket.emit('clientAuth', 'bs^yg$hn9^ni25Rcvy69')
 });
 
 const performanceData = () => {
