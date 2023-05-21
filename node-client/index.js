@@ -1,3 +1,4 @@
+require('dotenv').config()
 const os = require('os');
 const io = require('socket.io-client');
 let socket = io('http://127.0.0.1:8181');
@@ -7,10 +8,13 @@ socket.on('connect', () => {
     const ni = os.networkInterfaces(); 
     let macAddress;
     for(let key in ni) {
-        if(!ni[key][0].internal);
+        if(!ni[key][0].internal) {
             macAddress = ni[key][0].mac;
             break;
+        }
     }
+
+    socket.emit('clientAuth', 'bs^yg$hn9^ni25Rcvy69')
 
     let perfDataInterval = setInterval(() => {
         performanceData().then((data) => {
@@ -18,7 +22,9 @@ socket.on('connect', () => {
         });
     }, 1000);   
 
-    socket.emit('clientAuth', 'bs^yg$hn9^ni25Rcvy69')
+    socket.on('disconnect', () => {
+        clearInterval(perfDataInterval);
+    })
 });
 
 const performanceData = () => {
