@@ -14,7 +14,12 @@ socket.on('connect', () => {
         }
     }
 
-    socket.emit('clientAuth', 'bs^yg$hn9^ni25Rcvy69')
+    socket.emit('clientAuth', 'bs^yg$hn9^ni25Rcvy69');
+   
+    performanceData().then((data) => {
+        data.macAddress = macAddress;
+        socket.emit('initPerfData', data);
+    });
 
     let perfDataInterval = setInterval(() => {
         performanceData().then((data) => {
