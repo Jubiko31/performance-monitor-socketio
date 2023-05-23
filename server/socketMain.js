@@ -16,13 +16,31 @@ const socketMain = (io, socket) => {
         }
     });
 
-    socket.on('initPerfData', (data) => {
+    socket.on('initPerfData', async (data) => {
         macAddress = data.macAddress;
+        const mongoResponse = await checkAndAdd(data);
+        console.log(mongoResponse);
     });
 
     socket.on('perfData', (data) => {
         console.log(data);
     });
 };
+
+const checkAndAdd = async (data) => {
+    try {
+        const doc = await Machine.findOne({ macAddress: data.macAddress });
+        if (doc === null) {
+            let machine = new Machine(data);
+            await machine.save();
+            return 'added new machine to mongodb 🚀';
+        } else {
+            return 'found matching machine';
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 module.exports = socketMain;
