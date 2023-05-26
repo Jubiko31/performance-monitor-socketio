@@ -3,6 +3,12 @@ const cluster = require('cluster');
 const net = require('net');
 const socketio = require('socket.io')
 const socketMain = require('./socketMain.js')
+const cors = require('cors');
+
+const app = express();
+app.use(cors({
+    origin: '*'
+}));
 
 const PORT = 8181;
 const numProcesses = require('os').cpus().length;
@@ -37,8 +43,12 @@ if (cluster.isMaster) {
     let app = express();
 
     const server = app.listen(0, 'localhost');
-    const io = socketio(server);
-    
+    const io = require('socket.io')(server, {
+        cors: {
+          origin: '*',
+        }
+    });
+
     io.adapter(io_redis({ host: 'localhost', port: 6379 }));
     io.on('connection', (socket) => {
         socketMain(io, socket);

@@ -11,6 +11,7 @@ const socketMain = (io, socket) => {
             socket.join('clients');
         } else if (authKey === process.env.UI_CLIENT_KEY) {
             socket.join('ui');
+            console.log('react client has joined.')
         } else {
             socket.disconnect(true);
         }
@@ -23,7 +24,8 @@ const socketMain = (io, socket) => {
     });
 
     socket.on('perfData', (data) => {
-        console.log(data);
+        console.log('ping.');
+        io.to('ui').emit('data', data);
     });
 };
 
