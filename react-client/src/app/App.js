@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import socket from '../utils/socketConnection';
+import Widget from './widget';
+import { Cpu, Mem, Info } from './components';
 import './App.css';
 
 function App() {
@@ -12,8 +14,11 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      Hello from client
+    <div>
+      <Widget />
+      <Cpu />
+      <Mem />
+      <Info />
     </div>
   );
 }
