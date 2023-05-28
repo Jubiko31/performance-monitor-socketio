@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Mem() {
+function Mem(props) {
   return (
     <div>Mem</div>
   )

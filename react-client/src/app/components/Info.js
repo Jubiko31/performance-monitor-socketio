@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Info() {
+function Info(props) {
   return (
     <div>Info</div>
   )

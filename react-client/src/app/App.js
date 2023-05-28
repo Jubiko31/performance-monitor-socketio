@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import socket from '../utils/socketConnection';
 import Widget from './widget';
-import { Cpu, Mem, Info } from './components';
 import './App.css';
 
 function App() {
@@ -9,16 +8,20 @@ function App() {
 
   useEffect(() => {
     socket.on('data', (data) => {
-      console.log(data);
+      const currentState = ({...performanceData});
+      currentState[data.macA] = data;
+      setPerformanceData(currentState);
     })
   }, []);
 
+  let widgets = [];
+  Object.entries(performanceData).forEach(([key, value]) => {
+    widgets.push(<Widget key={key} data={value} />)
+  })
+
   return (
     <div>
-      <Widget />
-      <Cpu />
-      <Mem />
-      <Info />
+      {widgets}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Cpu() {
+function Cpu(props) {
   return (
     <div>Cpu</div>
   )

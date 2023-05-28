@@ -9,8 +9,12 @@ socket.on('connect', () => {
     let macAddress;
     for(let key in ni) {
         if(!ni[key][0].internal) {
-            macAddress = ni[key][0].mac;
-            break;
+            if(ni[key][0].mac === '00:00:00:00:00:00') {
+                macA = Math.random().toString(36).substring(2,15);
+            } else {
+                macAddress = ni[key][0].mac;
+                break;
+            }       
         }
     }
 
@@ -23,7 +27,8 @@ socket.on('connect', () => {
 
     let perfDataInterval = setInterval(() => {
         performanceData().then((data) => {
-            socket.emit('perfData', data)
+            data.macAddress = macAddress;
+            socket.emit('perfData', data);
         });
     }, 1000);   
 
