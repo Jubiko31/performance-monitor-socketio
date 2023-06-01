@@ -8,6 +8,8 @@ socket.on('connect', () => {
     const ni = os.networkInterfaces(); 
     let macAddress;
     for(let key in ni) {
+        macAddress = Math.floor(Math.random()*3) + 1;
+        break;
         if(!ni[key][0].internal) {
             if(ni[key][0].mac === '00:00:00:00:00:00') {
                 macA = Math.random().toString(36).substring(2,15);
@@ -52,6 +54,7 @@ const performanceData = () => {
         const totalMemory = os.totalmem();
         const usedMemory = totalMemory - freeMemory;
         const memoryUsage = Math.floor(usedMemory/totalMemory*100)/100;
+        const isActive = true;
         resolve({
             osType,
             cpuModel,
@@ -63,6 +66,7 @@ const performanceData = () => {
             totalMemory,
             usedMemory,
             memoryUsage,
+            isActive,
         })
     });
 };

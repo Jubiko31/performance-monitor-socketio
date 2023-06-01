@@ -12,10 +12,29 @@ const socketMain = (io, socket) => {
         } else if (authKey === process.env.UI_CLIENT_KEY) {
             socket.join('ui');
             console.log('react client has joined.')
+            Machine.find({}).exec((err, docs) => {
+                if (err) {
+                  console.error(err);
+                } else {
+                  docs.forEach((machine) => {
+                    machine.isActive = false;
+                    io.to('ui').emit('data', machine);
+                  });
+                }
+            });
         } else {
             socket.disconnect(true);
         }
     });
+
+    socket.on('disconnect', () => {
+        Machine.find({ macAddress }).exec((err, docs) => {
+            if(docs.length > 0) {
+                docs[0].isActive = false;
+                io.to('ui').emit('data', docs[0]);
+            }
+        })
+    })
 
     socket.on('initPerfData', async (data) => {
         macAddress = data.macAddress;
