@@ -8,8 +8,8 @@ socket.on('connect', () => {
     const ni = os.networkInterfaces(); 
     let macAddress;
     for(let key in ni) {
-        macAddress = Math.floor(Math.random()*3) + 1;
-        break;
+        // macAddress = Math.floor(Math.random()*3) + 1;
+        // break;
         if(!ni[key][0].internal) {
             if(ni[key][0].mac === '00:00:00:00:00:00') {
                 macA = Math.random().toString(36).substring(2,15);

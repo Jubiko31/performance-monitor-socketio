@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  socket:
+    container_name: socker_server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile.server
+    env_file:
+      - .env
+    command: npm run socket:io
+    environment:
+      - DATABASE_URL=<mongodb_url_here>
+    ports:
+      - 8181:8181
+    networks:
+      - performance-mon-networks
+    working_dir: /app
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    depends_on:
+      - redis
+
+  node-server:
+    container_name: node_client
+    build:
+      context: .
+      dockerfile: ./node-client/Dockerfile.node
+    command: npm run node:client
+    environment:
+      - DATABASE_URL=<mongodb_url_here>
+    networks:
+      - performance-mon-networks
+    working_dir: /app
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    depends_on:
+      - socket
+
+  client:
+    container_name: react-client
+    build:
+      context: .
+      dockerfile: ./react-client/Dockerfile.client
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: npm start
+    depends_on:
+      - server
+      - node
+    networks:
+      - performance-mon-networks
+
+  redis:
+    container_name: redis_server
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - performance-mon-networks
+
+networks:
+  performance-mon-networks:
+    driver: bridge
