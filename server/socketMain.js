@@ -1,5 +1,7 @@
 const socketMain = (io, socket) => {
-    console.log("A socket connected ID: ", socket.id)
-}
+    socket.on('perfData', (data) => {
+        console.log(data);
+    });
+};
 
 module.exports = socketMain;

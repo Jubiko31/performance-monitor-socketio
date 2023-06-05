@@ -4,7 +4,20 @@ let socket = io('http://127.0.0.1:8181');
 
 socket.on('connect', () => {
     console.log('Connected to the socket server 🎉')
-})
+    const ni = os.networkInterfaces(); 
+    let macAddress;
+    for(let key in ni) {
+        if(!ni[key][0].internal);
+            macAddress = ni[key][0].mac;
+            break;
+    }
+
+    let perfDataInterval = setInterval(() => {
+        performanceData().then((data) => {
+            socket.emit('perfData', data)
+        });
+    }, 1000);   
+});
 
 const performanceData = () => {
     return new Promise(async(resolve, reject) => {
@@ -14,7 +27,7 @@ const performanceData = () => {
         const cpuModel = CPUS[0].model;
         const coreNumber = CPUS.length;
         const cpuSpeed = CPUS[0].speed;
-        const cpuLoad = getCpuLoad();
+        const cpuLoad = await getCpuLoad();
         // Memory Information
         const systemUptime = os.uptime();
         const freeMemory = os.freemem();
@@ -64,7 +77,3 @@ const getCpuLoad = () => {
         }, 1000);
     })
 };
-
-performanceData().then((data) => {
-    console.log(data)
-});
